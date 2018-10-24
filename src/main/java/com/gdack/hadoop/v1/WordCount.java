@@ -27,7 +27,7 @@ public class WordCount {
       StringTokenizer itr = new StringTokenizer(value.toString(),
           " \t\n\r\f\'\",.:;?!()[]<>{}+-=@/*`");
       while (itr.hasMoreTokens()) {
-        word.set(itr.nextToken());
+        word.set(itr.nextToken().toLowerCase());
         context.write(word, one);
       }
     }
@@ -44,8 +44,11 @@ public class WordCount {
       for (IntWritable value : values) {
         sum += value.get();
       }
-      result.set(sum);
-      context.write(key, result);
+
+      if (sum > 4) {
+        result.set(sum);
+        context.write(key, result);
+      }
     }
   }
 
