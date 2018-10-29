@@ -1,6 +1,9 @@
 package com.gdack.hadoop.v1;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -29,12 +32,19 @@ public class CitationTemplate {
     @Override
     protected void reduce(Text key, Iterable<Text> values, Context context)
         throws IOException, InterruptedException {
-      StringBuilder csv = new StringBuilder();
+      // Sort values in alphabetical order.
+      List<String> valueList = new ArrayList<>();
       for (Text value : values) {
+        valueList.add(value.toString());
+      }
+      Collections.sort(valueList);
+
+      StringBuilder csv = new StringBuilder();
+      for (String value : valueList) {
         if (csv.length() > 0) {
           csv.append(",");
         }
-        csv.append(value.toString());
+        csv.append(value);
       }
 
       context.write(key, new Text(csv.toString()));
